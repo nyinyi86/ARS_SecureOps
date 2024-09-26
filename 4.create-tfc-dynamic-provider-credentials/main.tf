@@ -1,10 +1,4 @@
-resource "vault_jwt_auth_backend" "secureops-jwt-backend" {
-    description         = "Demonstration of the Terraform JWT auth backend"
-    path                = "jwt"
-    oidc_discovery_url  = "https://app.terraform.io/"
-    bound_issuer        = "https://app.terraform.io/"
-}
-
+# Create vault policy
 resource "vault_policy" "admin-policy" {
   name = "admin-policy"
 
@@ -35,10 +29,10 @@ path "sys/mounts/*"
   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
 }
 # List existing secrets engines.
-path "sys/mounts"
-{
-  capabilities = ["read"]
-}
+# path "sys/mounts"
+# {
+#   capabilities = ["read"]
+# }
 # Manage system backend
 path "db/*"
 {
@@ -67,21 +61,30 @@ path "sys/policies/*" {
 path "sys/policies/" {
   capabilities = ["create", "read", "update", "delete", "list", "sudo"]
 }
-path "sys/mounts/example" {
-  capabilities = ["create", "read", "update", "patch", "delete", "list"]
-}
+# path "sys/mounts/example" {
+#   capabilities = ["create", "read", "update", "patch", "delete", "list"]
+# }
 path "example/*" {
   capabilities = ["create", "read", "update", "patch", "delete", "list"]
 }
 EOT
 }
 
+
+
+# Enable JWT Auth method and Write vault configuration
+resource "vault_jwt_auth_backend" "secureops-jwt-backend" {
+    description         = "Demonstration of the Terraform JWT auth backend"
+    path                = "jwt"
+    oidc_discovery_url  = "https://app.terraform.io"
+    bound_issuer        = "https://app.terraform.io"
+}
+
 # Create a JWT Auth Role
-resource "vault_jwt_auth_backend_role" "jwt_role" {
+resource "vault_jwt_auth_backend_role" "jwt-role" {
   backend         = vault_jwt_auth_backend.secureops-jwt-backend.path
   role_name       = "vault-jwt-auth-role"
-  token_policies  = ["vault_policy.admin-policy.name"]
-
+  token_policies  = [vault_policy.admin-policy.name]
   bound_audiences = ["vault.workload.identity"]
   bound_claims_type = "glob"
   bound_claims = {
