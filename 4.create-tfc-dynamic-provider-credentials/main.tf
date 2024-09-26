@@ -1,4 +1,4 @@
-resource "vault_jwt_auth_backend" "Secureops-jwt-backend" {
+resource "vault_jwt_auth_backend" "secureops-jwt-backend" {
     description         = "Demonstration of the Terraform JWT auth backend"
     path                = "jwt"
     oidc_discovery_url  = "https://app.terraform.io/"
@@ -78,7 +78,7 @@ EOT
 
 # Create a JWT Auth Role
 resource "vault_jwt_auth_backend_role" "jwt_role" {
-  backend         = vault_jwt_auth_backend.Secureops-jwt-backend.path
+  backend         = vault_jwt_auth_backend.secureops-jwt-backend.path
   role_name       = "vault-jwt-auth-role"
   token_policies  = ["vault_policy.admin-policy.name"]
 
