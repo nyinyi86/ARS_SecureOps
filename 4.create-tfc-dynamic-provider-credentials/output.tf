@@ -5,5 +5,5 @@ output "bound_claims" {
 
 output "role_name" {
     description = "Vault JWT Auth Backend Role's role_name"
-    value =  vault_jwt_auth_backend_role.example.role_name
+    value =  vault_jwt_auth_backend_role.jwt_role.role_name
 }
